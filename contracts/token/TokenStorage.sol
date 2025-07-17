@@ -82,7 +82,7 @@ contract TokenStorage {
     mapping(address => bool) internal _frozen;
     mapping(address => uint256) internal _frozenTokens;
 
-    bool internal _tokenPaused = false;
+    bool internal _tokenPaused;
 
     /// @dev Identity Registry contract used by the onchain validator system
     IIdentityRegistry internal _tokenIdentityRegistry;

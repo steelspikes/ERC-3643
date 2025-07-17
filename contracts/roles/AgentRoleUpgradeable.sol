@@ -75,6 +75,10 @@ contract AgentRoleUpgradeable is OwnableUpgradeable {
     event AgentAdded(address indexed _agent);
     event AgentRemoved(address indexed _agent);
 
+    function __AgentRole_init() internal onlyInitializing {
+        __Ownable_init();
+    }
+
     modifier onlyAgent() {
         require(isAgent(msg.sender), "AgentRole: caller does not have the Agent role");
         _;

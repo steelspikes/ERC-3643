@@ -71,7 +71,8 @@ import "../storage/IRSStorage.sol";
 contract IdentityRegistryStorage is IIdentityRegistryStorage, AgentRoleUpgradeable, IRSStorage {
 
     function init() external initializer {
-        __Ownable_init();
+        __AgentRole_init();
+        // __Ownable_init();
     }
 
     /**
