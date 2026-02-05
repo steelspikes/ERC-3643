@@ -64,16 +64,13 @@ pragma solidity 0.8.17;
 
 import "@onchain-id/solidity/contracts/interface/IIdentity.sol";
 
-import "../../roles/AgentRoleUpgradeable.sol";
+import "../../roles/AgentRole.sol";
 import "../interface/IIdentityRegistryStorage.sol";
 import "../storage/IRSStorage.sol";
 
-contract IdentityRegistryStorage is IIdentityRegistryStorage, AgentRoleUpgradeable, IRSStorage {
+contract IdentityRegistryStorage is IIdentityRegistryStorage, AgentRole, IRSStorage {
 
-    function init() external initializer {
-        __AgentRole_init();
-        // __Ownable_init();
-    }
+    constructor() AgentRole() {}
 
     /**
      *  @dev See {IIdentityRegistryStorage-addIdentityToStorage}.

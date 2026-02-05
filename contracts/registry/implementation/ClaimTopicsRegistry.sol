@@ -62,15 +62,13 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../storage/CTRStorage.sol";
 import "../interface/IClaimTopicsRegistry.sol";
+import "../../global/Ownable.sol";
 
-contract ClaimTopicsRegistry is IClaimTopicsRegistry, OwnableUpgradeable, CTRStorage {
+contract ClaimTopicsRegistry is IClaimTopicsRegistry, Ownable, CTRStorage {
 
-    function init() external initializer {
-        __Ownable_init();
-    }
+    constructor() Ownable() {}
 
     /**
      *  @dev See {IClaimTopicsRegistry-addClaimTopic}.

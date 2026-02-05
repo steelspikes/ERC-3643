@@ -66,9 +66,9 @@ pragma solidity 0.8.17;
 import "./IToken.sol";
 import "@onchain-id/solidity/contracts/interface/IIdentity.sol";
 import "./TokenStorage.sol";
-import "../roles/AgentRoleUpgradeable.sol";
+import "../roles/AgentRole.sol";
 
-contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
+contract Token is IToken, AgentRole, TokenStorage {
 
     /// modifiers
 
@@ -97,7 +97,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
      *  emits an `IdentityRegistryAdded` event
      *  emits a `ComplianceAdded` event
      */
-    function init(
+    constructor(
         address _identityRegistry,
         address _compliance,
         string memory _name,
@@ -105,12 +105,12 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
         uint8 _decimals,
         // _onchainID can be zero address if not set, can be set later by owner
         address _onchainID
-    ) external initializer {
+    ) AgentRole() {
         // that require is protecting legacy versions of TokenProxy contracts
         // as there was a bug with the initializer modifier on these proxies
         // that check is preventing attackers to call the init functions on those
         // legacy contracts.
-        require(owner() == address(0), "already initialized");
+        // require(owner() == address(0), "already initialized");
         require(
             _identityRegistry != address(0)
             && _compliance != address(0)
@@ -120,8 +120,6 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
             && keccak256(abi.encode(_symbol)) != keccak256(abi.encode(""))
         , "invalid argument - empty string");
         require(0 <= _decimals && _decimals <= 18, "decimals between 0 and 18");
-        // __Ownable_init();
-        __AgentRole_init();
         _tokenName = _name;
         _tokenSymbol = _symbol;
         _tokenDecimals = _decimals;
@@ -415,7 +413,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
      *  @param _amount The number of tokens to transfer
      *  @return `true` if successful and revert if unsuccessful
      */
-    function transfer(address _to, uint256 _amount) public override whenNotPaused returns (bool) {
+    function transfer(address _to, uint256 _amount) public virtual override whenNotPaused returns (bool) {
         require(!_frozen[_to] && !_frozen[msg.sender], "wallet is frozen");
         require(_amount <= balanceOf(msg.sender) - (_frozenTokens[msg.sender]), "Insufficient Balance");
         if (_tokenIdentityRegistry.isVerified(_to) && _tokenCompliance.canTransfer(msg.sender, _to, _amount)) {
@@ -452,7 +450,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     /**
      *  @dev See {IToken-mint}.
      */
-    function mint(address _to, uint256 _amount) public override onlyAgent {
+    function mint(address _to, uint256 _amount) public virtual override onlyAgent {
         require(_tokenIdentityRegistry.isVerified(_to), "Identity is not verified.");
         require(_tokenCompliance.canTransfer(address(0), _to, _amount), "Compliance not followed");
         _mint(_to, _amount);

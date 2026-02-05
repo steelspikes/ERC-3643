@@ -62,14 +62,14 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "../../global/Ownable.sol";
 import "../../token/IToken.sol";
 import "./IModularCompliance.sol";
 import "./MCStorage.sol";
 import "./modules/IModule.sol";
 
 
-contract ModularCompliance is IModularCompliance, OwnableUpgradeable, MCStorage {
+contract ModularCompliance is IModularCompliance, Ownable, MCStorage {
 
     /// modifiers
 
@@ -81,9 +81,7 @@ contract ModularCompliance is IModularCompliance, OwnableUpgradeable, MCStorage 
         _;
     }
 
-    function init() external initializer {
-        __Ownable_init();
-    }
+    constructor() Ownable() {}
 
     /**
      *  @dev See {IModularCompliance-bindToken}.

@@ -68,12 +68,12 @@ import "@onchain-id/solidity/contracts/interface/IIdentity.sol";
 import "../interface/IClaimTopicsRegistry.sol";
 import "../interface/ITrustedIssuersRegistry.sol";
 import "../interface/IIdentityRegistry.sol";
-import "../../roles/AgentRoleUpgradeable.sol";
+import "../../roles/AgentRole.sol";
 import "../interface/IIdentityRegistryStorage.sol";
 import "../storage/IRStorage.sol";
 
 
-contract IdentityRegistry is IIdentityRegistry, AgentRoleUpgradeable, IRStorage {
+contract IdentityRegistry is IIdentityRegistry, AgentRole, IRStorage {
 
     /**
      *  @dev the constructor initiates the Identity Registry smart contract
@@ -84,11 +84,11 @@ contract IdentityRegistry is IIdentityRegistry, AgentRoleUpgradeable, IRStorage 
      *  emits a `TrustedIssuersRegistrySet` event
      *  emits an `IdentityStorageSet` event
      */
-    function init(
+    constructor(
         address _trustedIssuersRegistry,
         address _claimTopicsRegistry,
         address _identityStorage
-    ) external initializer {
+    ) AgentRole() {
         require(
             _trustedIssuersRegistry != address(0)
             && _claimTopicsRegistry != address(0)
@@ -100,8 +100,6 @@ contract IdentityRegistry is IIdentityRegistry, AgentRoleUpgradeable, IRStorage 
         emit ClaimTopicsRegistrySet(_claimTopicsRegistry);
         emit TrustedIssuersRegistrySet(_trustedIssuersRegistry);
         emit IdentityStorageSet(_identityStorage);
-        __AgentRole_init();
-        // __Ownable_init();
     }
 
     /**
